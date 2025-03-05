@@ -36,7 +36,7 @@ public class Plateau {
         } else {
             System.out.println("Position invalide !");
         }
-    }
+    }// V
 
     public boolean estCoupValide(int joueur, int x, int y){ //controleur
         if (cases[x][y] !=0){
@@ -72,7 +72,7 @@ public class Plateau {
         return false; //coup invalide
     }
 
-    public void afficher() {
+    /*public void afficher() {
         System.out.println("  A B C D E F G H"); //indices de colonnes
         for (int i = 0; i < 8; i++) {
             System.out.print((i+1) + " "); //indices de lignes
@@ -96,7 +96,7 @@ public class Plateau {
             System.out.println();
         }
         
-    }
+    }*/
     // faire un to string dans modele
     // affichage dans le ctrl à partir des get 
 }
