@@ -38,6 +38,40 @@ public class Plateau {
         }
     }
 
+    public boolean estCoupValide(int joueur, int x, int y){
+        if (cases[x][y] !=0){
+            return false; //case est non vide
+        }
+        int adversaire;
+        if  (joueur == 1){
+            adversaire=2;
+        } else {
+            adversaire=1;
+        }
+        int[][] directions = {
+            {1,0}, {-1,0}, {0,1}, {0,-1}, 
+            {1,1}, {-1,-1}, {1,-1}, {-1,1},
+        };
+        
+        for (int[] dir : directions) {
+            int dx = dir[0];
+            int dy = dir[1];
+            int i = x + dx;
+            int j = y + dy;
+            boolean pionAdverseTrouve = false;
+
+            while (i >= 0 && i < 8 && j >=0 && j<8 && cases[i][j]==adversaire){
+                pionAdverseTrouve = true;
+                i+=dx;
+                j+=dy;
+            }
+            if (pionAdverseTrouve && i >=0 && i<8 && j>=0 && j<8 && cases[i][j]==joueur){
+                return true; // coup valide
+            }
+        }
+        return false; //coup invalide
+    }
+
     public void afficher() {
         System.out.println("   A  B  C  D  E  F  G  H"); //indices de colonnes
         for (int i = 0; i < 8; i++) {
