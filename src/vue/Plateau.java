@@ -30,7 +30,7 @@ public class Plateau {
         return cases;
     }
 
-    public void setCase(int x, int y, int valeur) {
+    public void setCase(int x, int y, int valeur) { //modele jusqu'à départ
         if (x >= 0 && x < 8 && y >= 0 && y < 8) {
             cases[x][y] = valeur;
         } else {
@@ -38,7 +38,7 @@ public class Plateau {
         }
     }
 
-    public boolean estCoupValide(int joueur, int x, int y){
+    public boolean estCoupValide(int joueur, int x, int y){ //controleur
         if (cases[x][y] !=0){
             return false; //case est non vide
         }
@@ -73,7 +73,7 @@ public class Plateau {
     }
 
     public void afficher() {
-        System.out.println("   A  B  C  D  E  F  G  H"); //indices de colonnes
+        System.out.println("  A B C D E F G H"); //indices de colonnes
         for (int i = 0; i < 8; i++) {
             System.out.print((i+1) + " "); //indices de lignes
             for (int j = 0; j < 8; j++) {
@@ -85,11 +85,11 @@ public class Plateau {
                         break;
                     case 1:
                        
-                        System.out.print("\u26AA "); // Pion joueur 1
+                        System.out.print("\u26AA"); // Pion joueur 1
                         break;
                     case 2:
                         
-                        System.out.print("\u26AB "); // Pion joueur 2
+                        System.out.print("\u26AB"); // Pion joueur 2
                         break;
                 }
             }
@@ -97,4 +97,6 @@ public class Plateau {
         }
         
     }
+    // faire un to string dans modele
+    // affichage dans le ctrl à partir des get 
 }

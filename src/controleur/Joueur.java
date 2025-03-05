@@ -1,4 +1,4 @@
-package controleur;
+package controleur; //modele toutes les classes de données
 
 public class Joueur {
     private int id;
