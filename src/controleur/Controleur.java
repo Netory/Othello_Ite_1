@@ -119,22 +119,28 @@ public class Controleur {
                 int[][] ListCoupvalide =ihm.getPlateau().ListCoupValide(joueurActuel);
                 
                 boolean coupEffectué=false;
-                while (!coupEffectué){//recherche de coup valide aléatoire dans la matrice de coup valide
-                    int i=random.nextInt(7);
-                    int j=random.nextInt(7);
+                if(ihm.getPlateau().aUnCoupValide(joueurActuel)){
+                        while (!coupEffectué){//recherche de coup valide aléatoire dans la matrice de coup valide
+                            int i=random.nextInt(7);
+                            int j=random.nextInt(7);
 
-                    if ( ListCoupvalide[i][j]==-1){//trouve un coup valide et l'effectue
-                        ihm.getPlateau().setCase(i+1,j+1,joueurActuel.getTypedepion()=="\u26AA"?1:2);
-                        ihm.getPlateau().retournerPions(joueurActuel, i+1, j+1);//comme pour un tour de jeu mais sans demande
-                        
-                        if (joueurActuel.getNom()==joueur1.getNom()){//change de joueur actuel pour le prochain tour de jeu
-                            joueurActuel=joueur2;
+                            if ( ListCoupvalide[i][j]==-1){//trouve un coup valide et l'effectue
+                                ihm.getPlateau().setCase(i+1,j+1,joueurActuel.getTypedepion()=="\u26AA"?1:2);
+                                ihm.getPlateau().retournerPions(joueurActuel, i+1, j+1);//comme pour un tour de jeu mais sans demande
+                                
+                                if (joueurActuel.getNom()==joueur1.getNom()){//change de joueur actuel pour le prochain tour de jeu
+                                    joueurActuel=joueur2;
+                                }
+                                else{joueurActuel=joueur1;}
+                                
+                                coupEffectué=true;//à effectuer un coup valide donc fin de la méthode
+                            }
                         }
-                        else{joueurActuel=joueur1;}
-                        
-                        coupEffectué=true;//à effectuer un coup valide donc fin de la méthode
                     }
-                }
+                    if (joueurActuel.getNom()==joueur1.getNom()){//change de joueur actuel pour le prochain tour de jeu
+                        joueurActuel=joueur2;
+                    }
+                    else{joueurActuel=joueur1;}
                 }
                 //affichage du plateau
                 ihm.afficher();
