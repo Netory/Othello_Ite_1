@@ -10,6 +10,9 @@ public class Joueur {
         this.score=0;
         this.typedepion="";
     }
+    
+    //getteur et setteur des différents champs de Joueur
+   
     public void setScore(int score){
         this.score+=score;
     }
@@ -34,6 +37,7 @@ public class Joueur {
     }
 
     public void incrementerScore(){
+        //method pour augment le score de parties gagner
         score++;  // à faire marcher par rapport aux nb de pionts renversé
     }
 }

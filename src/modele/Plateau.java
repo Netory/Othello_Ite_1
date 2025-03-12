@@ -10,6 +10,8 @@ public class Plateau {
         cases = new int[8][8];
     }
     public void initialiserPlateau() {
+
+        //method qui initialise le plateau à l'aide de setcase 
         for (int i = 0; i < 8; i++) {
             for (int j = 0; j < 8; j++) {
                 cases[i][j] = 0; // 0 = case vide
@@ -29,6 +31,7 @@ public class Plateau {
     }
 
     public int[][] getPlateau() {
+        //obtient le plateau
         return cases;
     }
     /*public int[][] setPlateau(){
@@ -36,10 +39,12 @@ public class Plateau {
     }*/
 
     public int getCase(int x , int y){
+        //obtient le pion dans la case
         return cases[x][y];
     }
 
     public void setCase(int x, int y, int valeur) { 
+        //method pour poser un pion à l'aide des coordonnées
         x--;
         y--;
         if (x >= 0 && x < 8 && y >= 0 && y < 8) {
@@ -49,20 +54,21 @@ public class Plateau {
         }
     }
     public boolean estCoupValide(Joueur joueurActuel, int x, int y){ //controleur
-        
+        //method pour vérifié si un coup est valide en vérifiant 
+        //si il y a des pions qu'on peut retourner autour de la position
         
         x--;
         y--;
 
         if (x < 0 || x > 8 || y < 0 || y > 8) {
-            return false;
+            return false; //check si c'est une coordonée acceptable
         }
         
         if (cases[x][y] !=0){
             return false; //case est pas vide
         }
         int adversaire;
-        if  (joueurActuel.getTypedepion() == "\u26AB"){
+        if  (joueurActuel.getTypedepion() == "\u26AB"){  //obtient le type de pion
             adversaire=1;
         } else {
             adversaire=2;
@@ -81,7 +87,7 @@ public class Plateau {
             boolean pionAdverseTrouve = false;
 
             while (i >= 0 && i < 8 && j >=0 && j<8 && cases[i][j]==adversaire){ 
-                //check si la case est dans les limites   et si cases à côté sont à l'adversaire
+                //check si la case est dans les limites et si cases à côté sont à l'adversaire
                 pionAdverseTrouve = true;
                 i+=dx;
                 j+=dy;
@@ -94,6 +100,8 @@ public class Plateau {
     }
 
     public void retournerPions(Joueur joueurActuel, int x, int y) {
+        //method pour retourner les pions en vérifiant toutes les directions par rapport à une coordonnée
+
         // Déterminer le joueur adverse
         x--;
         y--;
@@ -126,7 +134,7 @@ public class Plateau {
                 j += dy;
             }
     
-            // check jusqu'où ça s'arrete et si c'est encadré
+            // check jusqu'où ça s'arrête et si c'est encadré
             if (pionAdverseTrouve && i >= 0 && i < 8 && j >= 0 && j < 8 && cases[i][j] == (joueurActuel.getTypedepion()=="\u26AA"?1:2)) {
                 // Retourner les pions adverses
                 i = x + dx;
@@ -140,6 +148,7 @@ public class Plateau {
         }
     }
     public boolean aUnCoupValide(Joueur joueur) {
+        //vérifie si il y a au moins un coup valide
         for (int i = 0; i < 8; i++) {
             for (int j = 0; j < 8; j++) {
                 if (cases[i][j] == 0 && estCoupValide(joueur, i+1, j+1)) {
@@ -150,7 +159,23 @@ public class Plateau {
         return false; //0 coup valide
     }
 
+    public int[][] ListCoupValide(Joueur joueur) {
+        //fait une matrice avec -1 pour les coups valides
+        int[][] pairList= new int[8][8];
+        
+        for (int i = 0; i < 8; i++) {
+            for (int j = 0; j < 8; j++) {
+                if (cases[i][j] == 0 && estCoupValide(joueur, i+1, j+1)) {
+                    pairList[i][j]=-1;
+                    //prend les coups valide
+                }
+            }
+        }
+        return pairList; //0 coup valide
+    }
+
     public int convertirLettretoChiffre(String lettre){
+        //method pour obtenir des coordonnées à partir d'une lettre
         switch (lettre) {
             case "A":
                 return 1;
