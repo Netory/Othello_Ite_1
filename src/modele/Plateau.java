@@ -1,5 +1,8 @@
 package modele;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import controleur.Joueur;
 
 public class Plateau {
@@ -159,14 +162,14 @@ public class Plateau {
         return false; //0 coup valide
     }
 
-    public int[][] ListCoupValide(Joueur joueur) {
+    public List<int[]> ListCoupValide(Joueur joueur) {
         //fait une matrice avec -1 pour les coups valides
-        int[][] pairList= new int[8][8];
-        
+        //int[][] pairList= new int[8][8];
+        List<int[]> pairList= new ArrayList<>();
         for (int i = 0; i < 8; i++) {
             for (int j = 0; j < 8; j++) {
                 if (cases[i][j] == 0 && estCoupValide(joueur, i+1, j+1)) {
-                    pairList[i][j]=-1;
+                    pairList.add(new int[]{i, j});
                     //prend les coups valide
                 }
             }
