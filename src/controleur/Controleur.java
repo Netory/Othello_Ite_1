@@ -2,6 +2,8 @@ package controleur;
 
 import java.util.List;
 import java.util.Random;
+
+import modele.Plateau;
 import vue.Ihm;
 
 
@@ -30,6 +32,25 @@ public class Controleur {
 
     public Ihm getIhm(){
         return ihm;
+    }
+
+    public int[] meilleurCoup(){
+        //checker tout les move dispo et faire par récurrence une verif des points totaux obtenus en mettant les points totaux et la profondeur en argument
+        //maybe à chaque fois créer un nouveau plateau à partir du précédent pour tester le coup d'après dessus ? 
+        int[][] copiePlateau = new int[8][8];
+
+    
+        for (int i = 0; i < 8; i++) {//initialisation du plateau
+            for (int j = 0; j < 8; j++) {
+                copiePlateau[i][j] = ihm.getPlateau().getCase(i, j);
+            }
+        }
+        int[] BestMove= new int[2];
+
+
+
+
+        return BestMove;
     }
 
     public String determinerGagnant() {
