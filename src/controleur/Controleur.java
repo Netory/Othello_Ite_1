@@ -34,24 +34,77 @@ public class Controleur {
         return ihm;
     }
 
-    public int[] meilleurCoup(){
+    public int[] meilleurCoup(Plateau plateau,int profondeur,Joueur joueurActuel,int[] NbestMove){
         //checker tout les move dispo et faire par récurrence une verif des points totaux obtenus en mettant les points totaux et la profondeur en argument
+        //faut utiliser la fonction évaluer de l'énoncer pour déterminer les meilleurs moves
         //maybe à chaque fois créer un nouveau plateau à partir du précédent pour tester le coup d'après dessus ? 
+        //1 de profondeur = 2 tour un de ceux du joueur et un de l'IA
         int[][] copiePlateau = new int[8][8];
 
     
         for (int i = 0; i < 8; i++) {//initialisation du plateau
             for (int j = 0; j < 8; j++) {
-                copiePlateau[i][j] = ihm.getPlateau().getCase(i, j);
+                copiePlateau[i][j] = plateau.getCase(i, j);
             }
         }
-        int[] BestMove= new int[2];
+        int[] bestMove= new int[2];
 
 
 
 
-        return BestMove;
+        return bestMove;
     }
+
+    public int evaluerPlateau(Joueur joueurActuel,Plateau plateau){
+
+        int scoreJoueurActuel = 0; 
+
+        for (int i = 0; i < 7; i++) {
+            for (int j = 0; j < 7; j++) {
+                if (ihm.getPlateau().getCase(i,j) == (joueurActuel.getTypedepion()=="\u26AA"?1:2)) {
+                    scoreJoueurActuel++; // Incrementer le score du joueur actuel
+                }
+            }
+        }   //faut checker toutes les cases qui ont comme pattern : {1,x},{6,x},{x,1},{x,6} c'est les bords
+        for (int x = 1; x < 7; x++) {
+            if (ihm.getPlateau().getCase(1,x) == (joueurActuel.getTypedepion()=="\u26AA"?1:2)) {
+                scoreJoueurActuel+=6;
+            }
+        }
+        for (int x = 1; x < 7; x++) {
+            if (ihm.getPlateau().getCase(6,x) == (joueurActuel.getTypedepion()=="\u26AA"?1:2)) {
+                scoreJoueurActuel+=6;
+            }
+        }
+        for (int x = 1; x < 7; x++) {
+            if (ihm.getPlateau().getCase(x,1) == (joueurActuel.getTypedepion()=="\u26AA"?1:2)) {
+                scoreJoueurActuel+=6;
+            }
+        }
+        for (int x = 1; x < 7; x++) {
+            if (ihm.getPlateau().getCase(x,6) == (joueurActuel.getTypedepion()=="\u26AA"?1:2)) {
+                scoreJoueurActuel+=6;
+            }
+        }
+            //on check tout les coins 1 à 1
+        if (ihm.getPlateau().getCase(0,7) == (joueurActuel.getTypedepion()=="\u26AA"?1:2)) {
+            scoreJoueurActuel+=11;
+        }
+        if (ihm.getPlateau().getCase(7,7) == (joueurActuel.getTypedepion()=="\u26AA"?1:2)) {
+            scoreJoueurActuel+=11;
+        }
+        if (ihm.getPlateau().getCase(0,0) == (joueurActuel.getTypedepion()=="\u26AA"?1:2)) {
+            scoreJoueurActuel+=11;
+        }
+        if (ihm.getPlateau().getCase(7,0) == (joueurActuel.getTypedepion()=="\u26AA"?1:2)) {
+            scoreJoueurActuel+=11;
+        }
+        
+        
+        return scoreJoueurActuel;
+    }
+
+
 
     public String determinerGagnant() {
         //method pour savoir qui gange ou ex aequo
@@ -98,6 +151,11 @@ public class Controleur {
         boolean ilsveulentjouer= true;
 
         while(ilsveulentjouer){//boucle pour rejouer une partie
+            
+            if (joueurActuel.getNom()==joueur2.getNom()){
+                joueurActuel=joueur1;
+            }
+            
 
             ihm.getPlateau().initialiserPlateau();
             PartieEnCours=true;
