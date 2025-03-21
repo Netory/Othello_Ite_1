@@ -33,6 +33,15 @@ public class Plateau {
         
     }
 
+    public Plateau getCopiePlateau(){
+        Plateau copiePlateau = new Plateau();//initialisation du plateau
+        for (int i = 0; i < 8; i++) {
+            for (int j = 0; j < 8; j++) {
+                copiePlateau.setCase(i+1, j+1, this.getCase(i, j));//copie des pions posés
+            }
+        }return copiePlateau;  
+    }
+
     public int[][] getPlateau() {
         //obtient le plateau
         return cases;
@@ -152,14 +161,7 @@ public class Plateau {
     }
     public boolean aUnCoupValide(Joueur joueur) {
         //vérifie si il y a au moins un coup valide
-        for (int i = 0; i < 8; i++) {
-            for (int j = 0; j < 8; j++) {
-                if (cases[i][j] == 0 && estCoupValide(joueur, i+1, j+1)) {
-                    return true; // au moins un coup valide trouvé
-                }
-            }
-        }
-        return false; //0 coup valide
+        return !(ListCoupValide(joueur).isEmpty());
     }
 
     public List<int[]> ListCoupValide(Joueur joueur) {
