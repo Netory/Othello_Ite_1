@@ -43,22 +43,42 @@ public class Controleur {
         int[] bestMove = null;
 
         for (int[] coupPossible : plateau.ListCoupValide(joueurActuel)) {
+            /*System.out.println("Profondeur: " + profondeur );
+            System.out.println("test");*/
             Plateau copiePlateau = plateau.getCopiePlateau();
             int score = minimax(copiePlateau, profondeur - 1, false, joueurActuel);
             // démarrage de la récurence en le faisant sur tout les coups valides
 
-            if (score > bestscore) {// changement des values si un coup fait un meilleur score alors on enregistre
+            if (score >= bestscore) {// changement des values si un coup fait un meilleur score alors on enregistre
                                     // celui-ci
                 bestMove = coupPossible;
                 bestscore = score;
             }
+        }if ( bestMove==null){
+            //System.out.println("pas normal ya pb :"+plateau.ListCoupValide(joueurActuel).toArray()[0]);
+            if (plateau.aUnCoupValide(joueurActuel))
+            for (int[] coupPossible : plateau.ListCoupValide(joueurActuel)) {
+                /*System.out.println("Profondeur: " + profondeur );
+                System.out.println("test");*/
+                Plateau copiePlateau = plateau.getCopiePlateau();
+                int score = minimax(copiePlateau, profondeur - 1, false, joueurActuel);
+
+                if (score > bestscore) {// changement des values si un coup fait un meilleur score alors on enregistre
+                    // celui-ci
+                    bestMove = coupPossible;
+                    bestscore = score;
+                }
+            
+            }
         }
-        return bestMove;
+    return bestMove;
     }
 
     public int minimax(Plateau plateau, int profondeur, boolean max_min, Joueur joueurActuel) {
+
+        
         // condition d'arret à la récurence
-        if (profondeur == 0 || (!(ihm.getPlateau().aUnCoupValide(joueur1)) && !(ihm.getPlateau().aUnCoupValide(joueur2)))) {
+        if (profondeur == 0 || (!(plateau.aUnCoupValide(joueur1)) && !(plateau.aUnCoupValide(joueur2)))) {
             return evaluerPlateau(joueurActuel, plateau);
         }
 
@@ -98,48 +118,48 @@ public class Controleur {
     public int evaluerPlateau(Joueur joueurActuel, Plateau plateau) {
 
         int scoreJoueurActuel = 0;
-        if (ihm.getPlateau().aUnCoupValide(joueur1) && ihm.getPlateau().aUnCoupValide(joueur2)) {
+        if (plateau.aUnCoupValide(joueur1) || plateau.aUnCoupValide(joueur2)) {
             //teste pour savoir si la partie est pas terminée                                                                          
                                                                                               
             for (int i = 0; i < 7; i++) {
                 for (int j = 0; j < 7; j++) {
-                    if (ihm.getPlateau().getCase(i, j) == (joueurActuel.getTypedepion().equalsIgnoreCase("\u26AA")? 1 : 2)) {
+                    if (plateau.getCase(i, j) == (joueurActuel.getTypedepion().equalsIgnoreCase("\u26AA")? 1 : 2)) {
                         scoreJoueurActuel++; // Incrementer le score du joueur actuel
                     }
                 }
             } // faut checker toutes les cases qui ont comme pattern : {1,x},{6,x},{x,1},{x,6}
               // c'est les bords
             for (int x = 1; x < 7; x++) {
-                if (ihm.getPlateau().getCase(1, x) == (joueurActuel.getTypedepion().equalsIgnoreCase("\u26AA")? 1 : 2)) {
+                if (plateau.getCase(1, x) == (joueurActuel.getTypedepion().equalsIgnoreCase("\u26AA")? 1 : 2)) {
                     scoreJoueurActuel += 6;
                 }
             }
             for (int x = 1; x < 7; x++) {
-                if (ihm.getPlateau().getCase(6, x) == (joueurActuel.getTypedepion().equalsIgnoreCase("\u26AA")? 1 : 2)) {
+                if (plateau.getCase(6, x) == (joueurActuel.getTypedepion().equalsIgnoreCase("\u26AA")? 1 : 2)) {
                     scoreJoueurActuel += 6;
                 }
             }
             for (int x = 1; x < 7; x++) {
-                if (ihm.getPlateau().getCase(x, 1) == (joueurActuel.getTypedepion().equalsIgnoreCase("\u26AA")? 1 : 2)) {
+                if (plateau.getCase(x, 1) == (joueurActuel.getTypedepion().equalsIgnoreCase("\u26AA")? 1 : 2)) {
                     scoreJoueurActuel += 6;
                 }
             }
             for (int x = 1; x < 7; x++) {
-                if (ihm.getPlateau().getCase(x, 6) == (joueurActuel.getTypedepion().equalsIgnoreCase("\u26AA")? 1 : 2)) {
+                if (plateau.getCase(x, 6) == (joueurActuel.getTypedepion().equalsIgnoreCase("\u26AA")? 1 : 2)) {
                     scoreJoueurActuel += 6;
                 }
             }
             // on check tout les coins 1 à 1
-            if (ihm.getPlateau().getCase(0, 7) == (joueurActuel.getTypedepion().equalsIgnoreCase("\u26AA")? 1 : 2)) {
+            if (plateau.getCase(0, 7) == (joueurActuel.getTypedepion().equalsIgnoreCase("\u26AA")? 1 : 2)) {
                 scoreJoueurActuel += 11;
             }
-            if (ihm.getPlateau().getCase(7, 7) == (joueurActuel.getTypedepion().equalsIgnoreCase("\u26AA")? 1 : 2)) {
+            if (plateau.getCase(7, 7) == (joueurActuel.getTypedepion().equalsIgnoreCase("\u26AA")? 1 : 2)) {
                 scoreJoueurActuel += 11;
             }
-            if (ihm.getPlateau().getCase(0, 0) == (joueurActuel.getTypedepion().equalsIgnoreCase("\u26AA")? 1 : 2)) {
+            if (plateau.getCase(0, 0) == (joueurActuel.getTypedepion().equalsIgnoreCase("\u26AA")? 1 : 2)) {
                 scoreJoueurActuel += 11;
             }
-            if (ihm.getPlateau().getCase(7, 0) == (joueurActuel.getTypedepion().equalsIgnoreCase("\u26AA")? 1 : 2)) {
+            if (plateau.getCase(7, 0) == (joueurActuel.getTypedepion().equalsIgnoreCase("\u26AA")? 1 : 2)) {
                 scoreJoueurActuel += 11;
             }
         } else {
@@ -185,21 +205,23 @@ public class Controleur {
 
         joueur1.setNom(ihm.demanderCaracteres("Entrez le Nom du Joueur 1:"));
         joueur1.setTypedepion("\u26AB");
-        String veutjouercontreia = ihm
-                .demanderCaracteres("Voulez vous jouer contre une IA si oui écrire Y sinon écrire N ?");
-        String veutjouercontreiaForte = ihm
-                .demanderCaracteres("Voulez vous jouer contre une IA Forte si oui écrire Y sinon écrire N ?");
+        String veutjouercontreia = ihm.demanderCaracteres("Voulez vous jouer contre une IA si oui écrire Y sinon écrire N ?");
+        
         if (veutjouercontreia.equalsIgnoreCase("N")) {
 
             joueur2.setNom(ihm.demanderCaracteres("Entrez le Nom du Joueur 2:"));
             joueur2.setTypedepion("\u26AA");
-        } else if (veutjouercontreiaForte.equalsIgnoreCase("Y")) {
-            joueur2.setNom("Strong_IA");
-            joueur2.setTypedepion("\u26AA");
-        } else {
-            joueur2.setNom("Gentle_IA");
-            joueur2.setTypedepion("\u26AA");
-        }
+        } else if(veutjouercontreia.equalsIgnoreCase("Y")) {
+            String veutjouercontreiaForte = ihm.demanderCaracteres("Voulez vous jouer contre une IA Forte si oui écrire Y sinon écrire N ?");
+            
+            if (veutjouercontreiaForte.equalsIgnoreCase("Y")){
+                joueur2.setNom("Strong_IA");
+                joueur2.setTypedepion("\u26AA");
+                }else {
+                    joueur2.setNom("Gentle_IA");
+                    joueur2.setTypedepion("\u26AA");
+                }
+            }
             boolean ilsveulentjouer = true;
 
             while (ilsveulentjouer) {// boucle pour rejouer une partie
@@ -244,9 +266,10 @@ public class Controleur {
                     }else if (joueurActuel.getNom().equalsIgnoreCase("Strong_IA")) {//tour de jeu strongia
                         ihm.afficherMessage(joueurActuel.getNom());
                         int[] meilleurCoup = meilleurCoup(ihm.getPlateau(), 6, joueurActuel);//recursion pour obtenir le coup le plus optimiser selon la profondeur
-                        ihm.getPlateau().setCase(meilleurCoup[0] + 1, meilleurCoup[1] + 1,joueurActuel.getTypedepion() == "\u26AA" ? 1 : 2);
-                        ihm.getPlateau().retournerPions(joueurActuel, meilleurCoup[0] + 1, meilleurCoup[1] + 1);
-
+                        if(!(meilleurCoup==null)){
+                            ihm.getPlateau().setCase(meilleurCoup[0] + 1, meilleurCoup[1] + 1,joueurActuel.getTypedepion() == "\u26AA" ? 1 : 2);
+                            ihm.getPlateau().retournerPions(joueurActuel, meilleurCoup[0] + 1, meilleurCoup[1] + 1);
+                        }
                         if (joueurActuel.getNom() == joueur1.getNom()) {// change de joueur actuel pour le prochain tour de jeu
                             joueurActuel = joueur2;
                         } else {
@@ -301,30 +324,28 @@ public class Controleur {
                        
                         // affichage du plateau
                         ihm.afficher();
-                        System.out.println(joueurActuel.getNom()+":");
+                       /* System.out.println(joueurActuel.getNom()+":");
                         System.out.println(ihm.getPlateau().aUnCoupValide(joueurActuel));
                         System.out.println(ihm.getPlateau().ListCoupValide(joueurActuel).toString());
                         if (ihm.getPlateau().ListCoupValide(joueurActuel).isEmpty() ){
                             System.out.println("coup non trouvé");
-                        }
-                        boolean joueur1Auncoupvalide = ihm.getPlateau().aUnCoupValide(joueur1);
-                        boolean joueur2Auncoupvalide = ihm.getPlateau().aUnCoupValide(joueur2);
-                        boolean partieTerminé = joueur1Auncoupvalide && joueur2Auncoupvalide;
+                        }*/
+                        
                         if (!(ihm.getPlateau().aUnCoupValide(joueur1)) && !(ihm.getPlateau().aUnCoupValide(joueur2))) {
                             // teste pour savoir si la partie est terminée
                                                                                                                     
                             PartieEnCours = false;
-                            System.out.println(joueur1.getNom()+":");
+                            /*System.out.println(joueur1.getNom()+":");
                             System.out.println(ihm.getPlateau().aUnCoupValide(joueur1));
                             System.out.println(joueur2.getNom()+":");
-                            System.out.println(ihm.getPlateau().aUnCoupValide(joueur2));
+                            System.out.println(ihm.getPlateau().aUnCoupValide(joueur2));*/
                         }
                         // PartieEnCours=false;// sert à terminer la partie au bout d'un tour
                 }
-                    System.out.println(joueur1.getNom()+":");
+                    /*System.out.println(joueur1.getNom()+":");
                     System.out.println(ihm.getPlateau().aUnCoupValide(joueur1));
                     System.out.println(joueur2.getNom()+":");
-                    System.out.println(ihm.getPlateau().aUnCoupValide(joueur2));
+                    System.out.println(ihm.getPlateau().aUnCoupValide(joueur2));*/
                     ihm.afficherMessage("La Partie est terminée !");
 
                     // Défilement d'une fin de partie à l'aide determinerGagnant
