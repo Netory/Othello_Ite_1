@@ -3,8 +3,6 @@ package modele;
 import java.util.ArrayList;
 import java.util.List;
 
-import controleur.Joueur;
-
 public class Plateau {
     
     private int[][] cases;

@@ -3,6 +3,7 @@ package controleur;
 import java.util.List;
 import java.util.Random;
 
+import modele.Joueur;
 import modele.Plateau;
 import vue.Ihm;
 
@@ -18,7 +19,7 @@ public class Controleur {
     private Random random;
 
     public Controleur(Ihm ihm) {
-        ;
+        
 
         this.random = new Random();
         this.ihm = ihm;
@@ -286,7 +287,7 @@ public class Controleur {
                     
                     }else if (joueurActuel.getNom().equalsIgnoreCase("Strong_IA")) {//tour de jeu strongia
                         ihm.afficherMessage(joueurActuel.getNom());
-                        int[] meilleurCoup = meilleurCoup(ihm.getPlateau(), 8, joueurActuel);//recursion pour obtenir le coup le plus optimiser selon la profondeur
+                        int[] meilleurCoup = meilleurCoup(ihm.getPlateau(), 7, joueurActuel);//recursion pour obtenir le coup le plus optimiser selon la profondeur
                         if(!(meilleurCoup==null)){
                             ihm.getPlateau().setCase(meilleurCoup[0] + 1, meilleurCoup[1] + 1,joueurActuel.getTypedepion() == "\u26AA" ? 1 : 2);
                             ihm.getPlateau().retournerPions(joueurActuel, meilleurCoup[0] + 1, meilleurCoup[1] + 1);

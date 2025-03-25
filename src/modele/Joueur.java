@@ -1,4 +1,4 @@
-package controleur; //modele toutes les classes de données
+package modele; //modele toutes les classes de données
 
 public class Joueur {
     private String nom;
