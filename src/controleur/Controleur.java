@@ -29,9 +29,7 @@ public class Controleur {
 
     }
 
-    public Ihm getIhm() {
-        return ihm;
-    }
+    
 
     public int[] meilleurCoup(Plateau plateau, int profondeur, Joueur joueurActuel) {
         // checker tout les move dispo et faire par récurrence une verif des points
@@ -41,12 +39,17 @@ public class Controleur {
         // 1 de profondeur = 2 tour un de ceux du joueur et un de l'IA
         int bestscore = Integer.MIN_VALUE;
         int[] bestMove = null;
+        int limiteJ = Integer.MIN_VALUE;
+        int limiteA = Integer.MAX_VALUE;
+
 
         for (int[] coupPossible : plateau.ListCoupValide(joueurActuel)) {
             /*System.out.println("Profondeur: " + profondeur );
             System.out.println("test");*/
             Plateau copiePlateau = plateau.getCopiePlateau();
-            int score = minimax(copiePlateau, profondeur - 1, false, joueurActuel);
+            int score = minimax(copiePlateau, profondeur - 1, false, joueurActuel,limiteJ,limiteA);
+
+
             // démarrage de la récurence en le faisant sur tout les coups valides
 
             if (score >= bestscore) {// changement des values si un coup fait un meilleur score alors on enregistre
@@ -54,6 +57,10 @@ public class Controleur {
                 bestMove = coupPossible;
                 bestscore = score;
             }
+            limiteJ = Math.max(limiteJ, bestscore);
+
+
+            
         }if ( bestMove==null){
             //System.out.println("pas normal ya pb :"+plateau.ListCoupValide(joueurActuel).toArray()[0]);
             if (plateau.aUnCoupValide(joueurActuel))
@@ -61,20 +68,21 @@ public class Controleur {
                 /*System.out.println("Profondeur: " + profondeur );
                 System.out.println("test");*/
                 Plateau copiePlateau = plateau.getCopiePlateau();
-                int score = minimax(copiePlateau, profondeur - 1, false, joueurActuel);
+                int score = minimax(copiePlateau, profondeur - 1, false, joueurActuel,limiteJ,limiteA);
 
                 if (score > bestscore) {// changement des values si un coup fait un meilleur score alors on enregistre
                     // celui-ci
                     bestMove = coupPossible;
                     bestscore = score;
                 }
+                limiteJ = Math.max(limiteJ, bestscore);
             
             }
         }
     return bestMove;
     }
 
-    public int minimax(Plateau plateau, int profondeur, boolean max_min, Joueur joueurActuel) {
+    public int minimax(Plateau plateau, int profondeur, boolean max_min, Joueur joueurActuel,int limiteJ, int limiteA) {
 
         
         // condition d'arret à la récurence
@@ -83,35 +91,48 @@ public class Controleur {
         }
 
         if (max_min) {// avec true pour max et false pour min
-            int bestscore = Integer.MIN_VALUE;// permet d'obtenir une valeur tjrs inférieur au prochain best score
+            int bestscoremax = Integer.MIN_VALUE;// permet d'obtenir une valeur tjrs inférieur au prochain best score
             for (int[] coupPossible : plateau.ListCoupValide(joueurActuel)) {// on essaye chaque coup
                 Plateau copiPlateau = plateau.getCopiePlateau();
-                copiPlateau.setCase(coupPossible[0] + 1, coupPossible[1] + 1,
-                        (joueurActuel.getTypedepion().equalsIgnoreCase("\u26AA")? 1 : 2));
-                int score = minimax(copiPlateau, profondeur - 1, false, joueurActuel);
+                copiPlateau.setCase(coupPossible[0] + 1, coupPossible[1] + 1,(joueurActuel.getTypedepion().equalsIgnoreCase("\u26AA")? 1 : 2));
+                copiPlateau.retournerPions(joueurActuel, coupPossible[0] +1, coupPossible[1] + 1);
+
+                int score = minimax(copiPlateau, profondeur - 1, false, joueurActuel,limiteJ,limiteA);
                 // permet de faire l'appel avec la récurrence en mettant à false le max_min pour
                 // passer au calcul du tour adverse
-                bestscore = Math.max(bestscore, score);
+                bestscoremax = Math.max(bestscoremax, score);
+                limiteJ = Math.max(limiteJ, score);
                 // permet d'obtenirle meilleur socre en celui enregistre et celui de l'itération actuelle
+            
+                if (limiteA <= limiteJ) {//pour sortir d'une récurrence inutile car sers à savoir la valeur minimum qui peut etre utile
+                    break;
+                }
+                
             }
-            return bestscore;
+            return bestscoremax;
 
             // même chose qu'en haut mais en inversant les min et max et remplacant le false
             // par true pour passer à celui d'en haut
         } else {// avec true pour max et false pour min
-            int bestscore = Integer.MAX_VALUE;// permet d'obtenir une valeur tjrs supérieur au prochain best score
+            int bestscoremin = Integer.MAX_VALUE;// permet d'obtenir une valeur tjrs supérieur au prochain best score
             for (int[] coupPossible : plateau.ListCoupValide(joueurActuel.getNom().equalsIgnoreCase(joueur1.getNom())?joueur2:joueur1)) {// on essaye chaque coup de l'adversaire
                 Plateau copiPlateau = plateau.getCopiePlateau();
-                copiPlateau.setCase(coupPossible[0] + 1, coupPossible[1] + 1,
-                        (joueurActuel.getTypedepion().equalsIgnoreCase("\u26AA")? 2 : 1));//1 et 2 inversé pour obtenir le type de pion de l'adversaire
-                int score = minimax(copiPlateau, profondeur - 1, true, joueurActuel);
+                copiPlateau.setCase(coupPossible[0] + 1, coupPossible[1] + 1,(joueurActuel.getTypedepion().equalsIgnoreCase("\u26AA")? 2 : 1));//1 et 2 inversé pour obtenir le type de pion de l'adversaire
+                copiPlateau.retournerPions(joueurActuel.getNom().equalsIgnoreCase(joueur1.getNom())? joueur2 : joueur1, coupPossible[0] +1, coupPossible[1] + 1);
+                
+                int score = minimax(copiPlateau, profondeur - 1, true, joueurActuel,limiteJ,limiteA);
                 // permet de faire l'appel avec la récurrence en mettant à true le max_min pour
                 // passer au calcul du tour adverse
-                bestscore = Math.min(bestscore, score);
+                bestscoremin = Math.min(bestscoremin, score);
+                limiteA = Math.min(limiteA, score);
                 // permet d'obtenirle meilleur socre en celui enregistre et celui de l'itération actuelle
 
+                if (limiteA <= limiteJ) {//pour sortir d'une récurrence inutile car sers à savoir la valeur minimum qui peut etre utile
+                    break;
+                }
+
             }
-            return bestscore;
+            return bestscoremin;
         }
     }
 
@@ -265,7 +286,7 @@ public class Controleur {
                     
                     }else if (joueurActuel.getNom().equalsIgnoreCase("Strong_IA")) {//tour de jeu strongia
                         ihm.afficherMessage(joueurActuel.getNom());
-                        int[] meilleurCoup = meilleurCoup(ihm.getPlateau(), 6, joueurActuel);//recursion pour obtenir le coup le plus optimiser selon la profondeur
+                        int[] meilleurCoup = meilleurCoup(ihm.getPlateau(), 8, joueurActuel);//recursion pour obtenir le coup le plus optimiser selon la profondeur
                         if(!(meilleurCoup==null)){
                             ihm.getPlateau().setCase(meilleurCoup[0] + 1, meilleurCoup[1] + 1,joueurActuel.getTypedepion() == "\u26AA" ? 1 : 2);
                             ihm.getPlateau().retournerPions(joueurActuel, meilleurCoup[0] + 1, meilleurCoup[1] + 1);
