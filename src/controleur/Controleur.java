@@ -1,5 +1,6 @@
 package controleur;
 
+import java.util.InputMismatchException;
 import java.util.List;
 import java.util.Random;
 
@@ -136,7 +137,7 @@ public class Controleur {
             return bestscoremin;
         }
     }
-
+    
     public int evaluerPlateau(Joueur joueurActuel, Plateau plateau) {
 
         int scoreJoueurActuel = 0;
@@ -185,7 +186,7 @@ public class Controleur {
                 scoreJoueurActuel += 11;
             }
         } else {
-            if (joueurActuel.getNom().equalsIgnoreCase(determinerGagnant())) {
+            if (joueurActuel.getNom().equalsIgnoreCase(determinerGagnant("othello"))) {
                 scoreJoueurActuel = 1000;
             } else {
                 scoreJoueurActuel = -1000;
@@ -195,7 +196,8 @@ public class Controleur {
         return scoreJoueurActuel;
     }
 
-    public String determinerGagnant() {
+    public String determinerGagnant(String jeuQuonJoue) {
+        if(jeuQuonJoue.equalsIgnoreCase("othello")){
         // method pour savoir qui gange ou ex aequo
         int scoreJoueur1 = 0; // Score du joueur 1 (pions noirs \u26AB)
         int scoreJoueur2 = 0; // Score du joueur 2 (pions blancs \u26AA)
@@ -219,12 +221,19 @@ public class Controleur {
         } else {
             return "ex aequo";
         }
+        }else{
+            
+            return null;
+        }
+
     }
 
     public void jouer() {
         // boucle de jeu principale qui appelle toutes les autres fonctions pour
         // dérouler une partie ou plusieurs parties
-
+        String jeuQuonJoue = ihm.demanderCaracteres("Voulez vous jouer à othello ou awalé?");
+        
+        if (jeuQuonJoue.equalsIgnoreCase("othello")){
         joueur1.setNom(ihm.demanderCaracteres("Entrez le Nom du Joueur 1:"));
         joueur1.setTypedepion("\u26AB");
         String veutjouercontreia = ihm.demanderCaracteres("Voulez vous jouer contre une IA si oui écrire Y sinon écrire N ?");
@@ -244,17 +253,26 @@ public class Controleur {
                     joueur2.setTypedepion("\u26AA");
                 }
             }
+        }else{
+            joueur1.setNom(ihm.demanderCaracteres("Entrez le Nom du Joueur 1:"));
+            joueur2.setNom(ihm.demanderCaracteres("Entrez le Nom du Joueur 2:"));
+        }
+
             boolean ilsveulentjouer = true;
 
             while (ilsveulentjouer) {// boucle pour rejouer une partie
 
-                if (joueurActuel.getNom() == joueur2.getNom()) {
+                if (joueurActuel.getNom().equalsIgnoreCase(joueur2.getNom())) {
                     joueurActuel = joueur1;
                 }
-
+                if(jeuQuonJoue.equalsIgnoreCase("othello")){
                 ihm.getPlateau().initialiserPlateau();
                 PartieEnCours = true;
                 ihm.afficher();
+
+                
+
+                //code plus en commun
                 while (PartieEnCours) {
                     // ihm.getPlateau().setCase(5, 5, 2);
                     
@@ -287,7 +305,7 @@ public class Controleur {
                     
                     }else if (joueurActuel.getNom().equalsIgnoreCase("Strong_IA")) {//tour de jeu strongia
                         ihm.afficherMessage(joueurActuel.getNom());
-                        int[] meilleurCoup = meilleurCoup(ihm.getPlateau(), 7, joueurActuel);//recursion pour obtenir le coup le plus optimiser selon la profondeur
+                        int[] meilleurCoup = meilleurCoup(ihm.getPlateau(), 6, joueurActuel);//recursion pour obtenir le coup le plus optimiser selon la profondeur
                         if(!(meilleurCoup==null)){
                             ihm.getPlateau().setCase(meilleurCoup[0] + 1, meilleurCoup[1] + 1,joueurActuel.getTypedepion() == "\u26AA" ? 1 : 2);
                             ihm.getPlateau().retournerPions(joueurActuel, meilleurCoup[0] + 1, meilleurCoup[1] + 1);
@@ -363,6 +381,56 @@ public class Controleur {
                             System.out.println(ihm.getPlateau().aUnCoupValide(joueur2));*/
                         }
                         // PartieEnCours=false;// sert à terminer la partie au bout d'un tour
+                    }//code en commun
+                }else{                                    
+                                  //AWALé
+                    joueur1.setTypedepion("1");
+                    joueur2.setTypedepion("2");
+                    ihm.getPlateauAwalé().initialiserPlateau();
+                    ihm.afficherPlateauAwalé(joueur1, joueur2);
+
+                    PartieEnCours = true;
+                    while (PartieEnCours) {
+                        
+                        boolean coupValide = false;
+                        int coupJouer = 0;
+
+                        while (!coupValide) {
+                            try {
+                                
+                                coupJouer=ihm.demanderEntier(joueurActuel.getNom() + ", jouez un coup parmi les cases du bas entre 1 et 6 : ");
+                                System.out.println();
+                                if (coupJouer < 1 || coupJouer > 6) {
+                                   ihm.afficherMessage("Erreur : Le numéro de case doit être entre 1 et 6.");
+                                } else if (ihm.getPlateauAwalé().getCase(2-Integer.parseInt(joueurActuel.getTypedepion()),coupJouer - 1)==0) {
+                                    ihm.afficherMessage("Erreur : La case " + coupJouer + " est vide. Choisissez une autre case.");
+                                } else {
+                                    coupValide = true;
+                                }
+                                
+                            } catch (InputMismatchException e) {
+                                ihm.afficherMessage("Erreur : Vous devez entrer un nombre entier.");
+                                ihm.emptyScanner();
+                                
+                            } catch (Exception e) {
+                                ihm.afficherMessage("Erreur inattendue : " + e.getMessage());
+                                ihm.emptyScanner();
+                            }
+                        }
+
+                        // Une fois sorti de la boucle, le coup est valide
+                        ihm.getPlateauAwalé().mouvementPlateau(joueurActuel, coupJouer-1);
+                        ihm.afficherPlateauAwalé(joueur1, joueur2);
+
+
+
+                    if (joueurActuel.getNom() == joueur1.getNom()) {// change de joueur actuel pour le prochain tour de jeu
+                                                                                
+                        joueurActuel = joueur2;
+                    } else {
+                        joueurActuel = joueur1;
+                    }
+                    }
                 }
                     /*System.out.println(joueur1.getNom()+":");
                     System.out.println(ihm.getPlateau().aUnCoupValide(joueur1));
@@ -371,10 +439,10 @@ public class Controleur {
                     ihm.afficherMessage("La Partie est terminée !");
 
                     // Défilement d'une fin de partie à l'aide determinerGagnant
-                    if (determinerGagnant() == joueur1.getNom()) {
+                    if (determinerGagnant(jeuQuonJoue) == joueur1.getNom()) {
                         ihm.afficherMessage(joueur1.getNom() + " a gagné cette partie !");
                         joueur1.upScore();
-                    } else if (determinerGagnant() == joueur2.getNom()) {
+                    } else if (determinerGagnant(jeuQuonJoue) == joueur2.getNom()) {
                         ihm.afficherMessage(joueur2.getNom() + " a gagné cette partie !");
                         joueur2.upScore();
                     } else {
