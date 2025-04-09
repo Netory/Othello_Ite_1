@@ -34,14 +34,70 @@ public class PlateauAwalé {
             System.out.println("Position invalide !");
         }
     }
-    public boolean estCoupValide(Joueur joueuractuel,int coupJouer){
-        //mettre la regle de l'affamer
-        
-        if(getCase(2-Integer.parseInt(joueuractuel.getTypedepion()), coupJouer)==0){
+    public boolean estCoupValide(Joueur joueurActuel, int coupJouer) {
+        // Vérification basique (case non vide)
+        int row = Integer.parseInt(joueurActuel.getTypedepion()) == 1 ? 0 : 1;
+        if (getCase(row, coupJouer) == 0) {
             return false;
         }
-        return true;
-    } 
+    
+        // Création d'une copie du plateau pour simulation
+        int[][] simulationPlateau = new int[2][6];
+        for (int i = 0; i < 2; i++) {
+            for (int j=0;j<6;j++){
+                simulationPlateau[i][j]=getCase(i, j);
+            }
+        }
+    
+        // Simulation de la distribution
+        int nbGraines = simulationPlateau[row][coupJouer];
+        simulationPlateau[row][coupJouer] = 0;
+        int currentRow = row;
+        int currentCol = coupJouer;
+        int lastRow = -1, lastCol = -1;
+    
+        while (nbGraines > 0) {
+            if (currentRow == 0) { // Joueur bas
+                currentCol = (currentCol + 1) % 6;
+                if (currentCol == 0) currentRow = 1;
+            } else { // Joueur haut
+                currentCol = (currentCol - 1 + 6) % 6;
+                if (currentCol == 5) currentRow = 0;
+            }
+    
+            if (!(currentRow == row && currentCol == coupJouer)) {
+                simulationPlateau[currentRow][currentCol]++;
+                nbGraines--;
+                lastRow = currentRow;
+                lastCol = currentCol;
+            }
+        }
+    
+        // Simulation de la capture
+        if (lastRow != -1 && lastRow != row) {
+            int checkRow = lastRow;
+            int checkCol = lastCol;
+            
+            while (checkRow != row && simulationPlateau[checkRow][checkCol] >= 2 
+                   && simulationPlateau[checkRow][checkCol] <= 3) {
+                
+                simulationPlateau[checkRow][checkCol] = 0;
+                
+                if (checkRow == 0) checkCol++;
+                else checkCol--;
+            }
+        }
+    
+        // Vérification de l'affamement
+        int adversaireRow = 1 - row;
+        for (int col = 0; col < 6; col++) {
+            if (simulationPlateau[adversaireRow][col] > 0) {
+                return true; // Coup valide
+            }
+        }
+        
+        return false; // Coup invalide car affame l'adversaire
+    }
 
     public boolean finDuJeu(Joueur joueuractuel){
         int i=2-Integer.parseInt(joueuractuel.getTypedepion());
