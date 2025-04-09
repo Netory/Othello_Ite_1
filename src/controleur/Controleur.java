@@ -222,8 +222,13 @@ public class Controleur {
             return "ex aequo";
         }
         }else{
-            
-            return null;
+            if (joueur1.getScore() > joueur2.getScore()) {
+                return joueur1.getNom();
+            } else if (joueur2.getScore() > joueur1.getScore()) {
+                return joueur2.getNom();
+            } else {
+                return "ex aequo";
+            }
         }
 
     }
@@ -424,12 +429,31 @@ public class Controleur {
 
 
 
-                    if (joueurActuel.getNom() == joueur1.getNom()) {// change de joueur actuel pour le prochain tour de jeu
-                                                                                
-                        joueurActuel = joueur2;
-                    } else {
-                        joueurActuel = joueur1;
-                    }
+                        if (joueurActuel.getNom() == joueur1.getNom()) {// change de joueur actuel pour le prochain tour de jeu
+                                                                                    
+                            joueurActuel = joueur2;
+                        } else {
+                            joueurActuel = joueur1;
+                        }
+
+                        if ((ihm.getPlateauAwalé().finDuJeu(joueurActuel)) || ihm.getPlateauAwalé().finDuJeu(joueurActuel.getNom().equalsIgnoreCase(joueur1.getNom())? joueur2 : joueur1)) {
+                        // teste pour savoir si la partie est terminée
+                        
+                            for (int w = 0; w < 2; w++) {
+                                for (int y = 0; y < 6; y++) {
+                                    if (ihm.getPlateauAwalé().finDuJeu(joueurActuel)){
+                                        joueurActuel.setScore(ihm.getPlateauAwalé().getCase(w, y));
+                                        ihm.getPlateauAwalé().setCase(w, y, 0); // 0 = case vide
+                                    }else{
+                                        (joueurActuel.getNom().equalsIgnoreCase(joueur1.getNom())? joueur2 : joueur1).setScore(ihm.getPlateauAwalé().getCase(w, y));
+                                        ihm.getPlateauAwalé().setCase(w, y, 0);
+                                    }
+                                }
+                            }     
+                                                                                    
+                        PartieEnCours = false;
+                        
+                        }//PartieEnCours=false; sert à terminer la partie tot
                     }
                 }
                     /*System.out.println(joueur1.getNom()+":");

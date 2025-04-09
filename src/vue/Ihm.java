@@ -54,15 +54,15 @@ public class Ihm {
     }
 
     public void afficherPlateauAwalé(Joueur joueur1 , Joueur joueur2){
-        System.out.print(joueur1.getScore() + "  ");
+        System.out.println("   "+joueur1.getNom()+"                "+joueur2.getNom());
+        System.out.print("    "+joueur1.getScore() + "  ");
         for (int i=0;i<2;i++){
             for (int j = 0; j < 6; j++) {
                 System.out.print("|"+this.plateauAwalé.getCase(i, j));
             }System.out.print("|");
             if(i<1){
-                
-            System.out.println("  " + joueur2.getScore());
-            System.out.print("   ");
+            System.out.println("  "+joueur2.getScore()+"  ");
+            System.out.print("       ");
             }
         }
         System.out.println();
